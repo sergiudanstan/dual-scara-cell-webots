@@ -4,6 +4,14 @@ Celulă de ambalare cu două roboți **Epson SCARA T6-602S**. Un conveior aduce 
 
 Epson și T6-602S sunt mărci ale proprietarilor lor. Geometria este modelul Webots R2025a `ScaraT6`, licență Apache 2.0, cu limitele J1/J2 din fișa tehnică (±132° / ±150°). Nu este un produs Epson.
 
+## Demo
+
+Animația 3D în browser (orbită, panoramare, zoom, bară de redare):
+
+https://sergiudanstan.github.io/dual-scara-cell-webots/dual_scara.html
+
+Se reînregistrează din lumea curentă cu `tools/build_site.sh` (fereastra 2–90 s, 25 fps). Publicarea paginii este `git subtree push --prefix site origin gh-pages`.
+
 ## Pornire
 
 ```
@@ -59,7 +67,7 @@ tests/run_smoke.sh
 
 Testul din `tests/test_cell.py` nu pornește Webots. Verifică cinematica, că fiecare țintă a celulei e în spațiul de lucru, că traiectoriile nu trec pe jumătatea celuilalt robot și că dispecerul alternează preluarea. `tests/run_smoke.sh` rulează lumea în Webots, fără fereastră, și cere ca ambii roboți să așeze cel puțin o piesă, ca eroarea de model direct față de simulator să fie sub 2 mm și ca oprirea de urgență și scannerul să reacționeze.
 
-Pe macOS 27, Webots R2025a instalat aici nu pornește: verificarea portului TCP raportează fals că 1234–1244 sunt ocupate. Corecția este în Webots după 3 octombrie 2026 (PR 7032). Cu acea versiune, `tests/run_smoke.sh` poate rula.
+Pe macOS 27, Webots R2025a raportează fals că porturile 1234–1244 sunt ocupate ([#6976](https://github.com/cyberbotics/webots/issues/6976), corectat în Webots după 3 octombrie 2026, PR 7032). `tests/run_smoke.sh` și `tools/build_site.sh` compilă `tools/webots_connect_fix.c` și îl încarcă cu `DYLD_INSERT_LIBRARIES`. Binarul `.dylib` nu se versiona.
 
 ## Program
 
@@ -71,8 +79,11 @@ lib/motion.py                 interpolare în articulații și pe dreaptă
 controllers/scara_robot/      același program pe ambii roboți
 controllers/cell_plc/         secvențe, siguranță, bandă, tăvi
 controllers/operator/         pietonul din câmpul scannerului
-protos/ScaraT6Cell.proto      T6-602S, cu poziție inițială pe articulații
+protos/ScaraT6Cell.proto      T6-602S; articulațiile pornesc de la 0, controlerul le duce acasă
 tools/gen_world.py            scrie worlds/dual_scara_cell.wbt
+tools/build_site.sh           înregistrează animația HTML5 din site/
+controllers/animation_recorder/  pornește și oprește înregistrarea
+controllers/demo_cues/        miniatura și traversarea operatorului
 ```
 
 PLC-ul și roboții schimbă JSON prin Emitter/Receiver, canalele 1–2 pentru A și 3–4 pentru B.

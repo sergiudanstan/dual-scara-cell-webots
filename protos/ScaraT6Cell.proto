@@ -7,7 +7,6 @@
 # Derived from Cyberbotics ScaraT6.proto (Webots R2025a, Apache License 2.0).
 # Changes: PROTO renamed, mesh URLs made absolute, joint limits J1/J2 widened from the
 # demo calibration (+-0.73/+-0.83 rad) to the T6-602S datasheet, staticBase TRUE by default.
-# q1, q2, q4 and shaft set the initial joint positions so two facing robots can start folded.
 # template language: javascript
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/factory/tools/protos/CapScrew.proto"
@@ -27,10 +26,6 @@ PROTO ScaraT6Cell [
   field SFBool            synchronization TRUE            # Is `Robot.synchronization`.
   field SFString          customData      ""              # Is `Robot.customData`.
   field SFBool            staticBase      TRUE            # Defines if the scara base should be pinned to the static environment.
-  field SFFloat           q1              0               # Initial J1 position (rad).
-  field SFFloat           q2              0               # Initial J2 position (rad).
-  field SFFloat           q4              0               # Initial shaft rotation (rad).
-  field SFFloat           shaft           0               # Initial shaft slide (m), 0 is up, -0.2 is down.
   field MFNode            handSlot        []              # Extends the shaft with new nodes in the hand slot.
 
 ]
@@ -280,7 +275,6 @@ PROTO ScaraT6Cell [
       }
       DEF LINK1_HINGEJOINT HingeJoint {
         jointParameters HingeJointParameters {
-          position IS q1
           axis 0 0 1
           anchor 0.06 0 0.22
         }
@@ -337,7 +331,6 @@ PROTO ScaraT6Cell [
               children [
                 DEF LINK2_HINGEJOINT HingeJoint {
                   jointParameters HingeJointParameters {
-                    position IS q2
                     axis 0 0 1
                     anchor 0.007 0.005 -0.04
                   }
@@ -514,7 +507,6 @@ PROTO ScaraT6Cell [
                       }
                       DEF LINK3_HINGEJOINT HingeJoint {
                         jointParameters HingeJointParameters {
-                          position IS q4
                           axis 0 0 1
                           anchor 0.2615 0 0
                         }
@@ -532,7 +524,6 @@ PROTO ScaraT6Cell [
                           children [
                             DEF Shaft SliderJoint {
                               jointParameters JointParameters {
-                                position IS shaft
                               }
                               device [
                                 LinearMotor {

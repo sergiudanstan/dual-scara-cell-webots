@@ -4,6 +4,13 @@
 set -eu
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 WEBOTS=${WEBOTS:-/Applications/Webots.app/Contents/MacOS/webots}
+FIX="$ROOT/tools/webots_connect_fix.dylib"
+if [ ! -f "$FIX" ] && [ -f "$ROOT/tools/webots_connect_fix.c" ]; then
+  clang -dynamiclib -o "$FIX" "$ROOT/tools/webots_connect_fix.c"
+fi
+if [ -f "$FIX" ]; then
+  export DYLD_INSERT_LIBRARIES="$FIX${DYLD_INSERT_LIBRARIES:+:$DYLD_INSERT_LIBRARIES}"
+fi
 T=${SMOKE_T:-55}
 tmp="$ROOT/worlds/.smoke.wbt"
 sed "s/controller \"cell_plc\"/controller \"cell_plc\" controllerArgs [ \"--smoke=$T\" ]/" \

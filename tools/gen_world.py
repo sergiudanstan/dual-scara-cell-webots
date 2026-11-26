@@ -12,7 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 sys.path.insert(0, os.path.join(ROOT, "lib"))
 import layout as L  # noqa: E402
-from geom import ik_world  # noqa: E402
+
 
 OUT = os.path.join(ROOT, "worlds", "dual_scara_cell.wbt")
 R = "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/"
@@ -73,13 +73,6 @@ def bar(p0, p1, s, a):
     c = [(p0[i] + p1[i]) / 2 for i in range(3)]
     size = [max(abs(p1[i] - p0[i]), s) for i in range(3)]
     return box(size, a, c)
-
-
-def home_joints(side):
-    q = ik_world(L.BASE[side], side, L.home_world(side), [0.0, 1.2, 0.0, 0.0])
-    if q is None:
-        raise SystemExit("home pose of SCARA %s is not reachable" % side)
-    return q
 
 
 def generate():
@@ -282,14 +275,12 @@ def cup():
 
 def robots():
     for side, channel in (("A", 1), ("B", 3)):
-        q = home_joints(side)
         bx, by, bz, yaw = L.BASE[side]
         slot = ("handSlot [ Receiver { name \"scara_rx\" channel %d } Emitter { name \"scara_tx\" channel %d } "
                 "Pose { children [ %s ] } DEF SCARA_%s_TCP Pose { translation 0 0 %g } ]"
                 % (channel, channel + 1, cup(), side, -L.SCARA_TOOL))
         w("ScaraT6Cell { translation %s rotation 0 0 1 %g name \"SCARA %s\" controller \"scara_robot\" "
-          "supervisor TRUE q1 %g q2 %g q4 %g shaft %g %s }"
-          % (f(bx, by, bz), yaw, side, q[0], q[1], q[3], q[2], slot))
+          "supervisor TRUE %s }" % (f(bx, by, bz), yaw, side, slot))
 
 
 def products():

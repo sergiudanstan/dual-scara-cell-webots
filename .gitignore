@@ -3,4 +3,7 @@ __pycache__/
 .DS_Store
 tests/.smoke.log
 worlds/.*.wbt
+worlds/*.wbproj
+site/.build.log
+tools/*.dylib
 *.mp4

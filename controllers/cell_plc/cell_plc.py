@@ -319,7 +319,7 @@ class PLC(Supervisor):
                 a["busy"] = True
                 a["part"] = part
                 self.zone = who
-                self.send(who, cmd="pick_place", side=who, id=a["id"], part=part,
+                self.send(who, cmd="pick_place", id=a["id"], part=part,
                           pick=list(L.PICK), place=list(place))
                 self.log("SCARA %s pick %d -> pocket %d" % (who, a["id"], a["pocket"]))
         for s in SIDES:

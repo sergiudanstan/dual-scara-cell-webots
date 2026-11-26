@@ -44,10 +44,13 @@ class Scara(Supervisor):
         self.tx = self.getDevice("scara_tx")
         self.led = self.getDevice("epson_led")
         self.carrier = Carrier(self, "SCARA_%s_TCP" % self.side)
+        self.base = (0.0, 0.0, 0.0, 0.0)
+        self.job = None
+
+    def read_base(self):
         bp = self.getSelf().getPosition()
         R = self.getSelf().getOrientation()
         self.base = (bp[0], bp[1], bp[2], math.atan2(R[3], R[0]))
-        self.job = None
 
     def send(self, **m):
         m.setdefault("side", self.side)
@@ -125,6 +128,7 @@ class Scara(Supervisor):
 
     def run(self):
         self.step(self.dt)
+        self.read_base()
         q0 = [s.getValue() for s in self.sensors]
         self.ex = Executor(self._ik, q0, JOINT_SPEED)
         home = self.to_base(L.home_world(self.side))
@@ -138,6 +142,7 @@ class Scara(Supervisor):
                 self.send(evt="error", msg=self.ex.error)
                 self.ex.error = None
                 self.job = None
+            q[2] = min(0.0, q[2])
             for mtr, v in zip(self.motors, q):
                 mtr.setPosition(v)
             self.carrier.update()
