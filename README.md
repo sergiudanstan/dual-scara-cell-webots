@@ -61,7 +61,7 @@ Aceleași litere se pot scrie în câmpul `customData` al robotului `cell PLC`.
 ## Verificări
 
 ```
-python3 tests/test_cell.py
+python3 -m pytest -q tests        # or: python3 tests/test_cell.py
 tests/run_smoke.sh
 ```
 
@@ -87,3 +87,7 @@ controllers/demo_cues/        miniatura și traversarea operatorului
 ```
 
 PLC-ul și roboții schimbă JSON prin Emitter/Receiver, canalele 1–2 pentru A și 3–4 pentru B.
+
+## Versiuni și licență
+
+Licență MIT ([LICENSE](LICENSE)). Modificările sunt în [CHANGELOG.md](CHANGELOG.md); contribuții în [CONTRIBUTING.md](CONTRIBUTING.md); vulnerabilități în [SECURITY.md](SECURITY.md).
